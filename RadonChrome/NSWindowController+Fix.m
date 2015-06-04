@@ -8,6 +8,8 @@
 
 #import "NSWindowController+Fix.h"
 
+#import "NSWindowController+Fix.h"
+
 @implementation NSWindowController (Fix)
 
 -(void)FIXshowWindow:(id)sender {
@@ -39,12 +41,25 @@
     NSUserNotification *notification = [[NSUserNotification alloc] init];
     notification.title = title;
     notification.informativeText = text;
-    notification.soundName = NSUserNotificationDefaultSoundName;
+    //notification.soundName = NSUserNotificationDefaultSoundName;
     notification.userInfo = @{@"uuid" : thisUUID};
 
     
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:singleton];
     [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+    [self activateSpeech];
+    if (!text) {
+        [speak startSpeakingString:title];
+    }
+    else {
+        [speak startSpeakingString:text];
+    }
+}
+
+- (void)activateSpeech {
+    if (!speak) {
+        speak = [[NSSpeechSynthesizer alloc] init];
+    }
 }
 
 @end
