@@ -8,6 +8,9 @@
 
 #import "NSWindowController+Fix.h"
 
+// needed for speak
+NSSpeechSynthesizer *speak;
+
 @implementation NSWindowController (Fix)
 
 -(void)FIXshowWindow:(id)sender {
@@ -39,12 +42,22 @@
     NSUserNotification *notification = [[NSUserNotification alloc] init];
     notification.title = title;
     notification.informativeText = text;
-    notification.soundName = NSUserNotificationDefaultSoundName;
+    //notification.soundName = NSUserNotificationDefaultSoundName;
     notification.userInfo = @{@"uuid" : thisUUID};
 
     
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:singleton];
     [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+    // speak notification
+    [self activateSpeech];
+    [speak startSpeakingString:text];
+}
+
+// check if speech synthesizer is allready active
+- (void)activateSpeech {
+    if (!speak) {
+        speak = [[NSSpeechSynthesizer alloc] init];
+    }
 }
 
 @end
